@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   postgres:
-    image: postgres:latest
+    image: registry.gitlab.com/dalibo/postgresql_anonymizer
     environment:
       POSTGRES_DB: "pbd"
       POSTGRES_USER: "admin"
