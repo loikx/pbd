@@ -353,26 +353,34 @@ db.orders.createIndex({
 
 
 db.createView(
-    "order_reviews_view",
-    "orders",
+    "product_reviews_view",
+    "product",
     [
         {
-        $lookup: {
-            from: "review", 
-            localField: "id",  
-            foreignField: "order_id",
+          $lookup: {
+            from: "review",
+            localField: "_id",
+            foreignField: "product_id",
             as: "reviews"
-        }
+          }
         },
         {
-        $project: {
-            _id: 0,
-            order_id: "$id",
-            date: 1,
-            price: 1,
-            status: 1,
-            reviews: { rating: 1, text: 1 }
-        }
+          $addFields: {
+              avg_rating: {
+                $ifNull: [
+                  { $avg: "$reviews.rating" },
+                  0
+                ]
+              },
+              text: "$reviews.text"
+          }
+        },
+        {
+          $project: {
+            reviews: 0,
+            category_id: 0,
+            seller_id: 0
+          }
         }
     ]
 );
